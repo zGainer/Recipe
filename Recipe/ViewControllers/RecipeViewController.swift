@@ -114,8 +114,6 @@ private extension RecipeViewController {
         }
     }
     
-    // TODO: Разобраться с @escaping
-    
     func showAlert(completion: @escaping () -> Void) {
         
         let alert = UIAlertController(title: "Delete recipe?", message: nil, preferredStyle: .alert)
