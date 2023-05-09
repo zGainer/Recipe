@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21754" systemVersion="22E261" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="Category" representedClassName=".Category" syncable="YES" codeGenerationType="class">
+        <attribute name="name" attributeType="String"/>
+        <relationship name="recipes" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Recipe" inverseName="category" inverseEntity="Recipe"/>
+    </entity>
+    <entity name="Recipe" representedClassName=".Recipe" syncable="YES" codeGenerationType="class">
+        <attribute name="directions" optional="YES" attributeType="String"/>
+        <attribute name="ingredients" optional="YES" attributeType="String"/>
+        <attribute name="name" attributeType="String"/>
+        <attribute name="notes" optional="YES" attributeType="String"/>
+        <attribute name="photo" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData"/>
+        <attribute name="source" optional="YES" attributeType="String"/>
+        <relationship name="category" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Category" inverseName="recipes" inverseEntity="Category"/>
+    </entity>
+</model>
