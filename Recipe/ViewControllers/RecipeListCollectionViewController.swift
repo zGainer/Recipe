@@ -41,8 +41,8 @@ extension RecipeListCollectionViewController {
         
         if let addRecipeVC = segue.destination as? AddRecipeViewController {
             addRecipeVC.category = category
-        } else if let recipeVC = segue.destination as? RecipeViewController {
-            recipeVC.recipe = selectedRecipe
+//        } else if let recipeVC = segue.destination as? RecipeViewController {
+//            recipeVC.recipe = selectedRecipe
         }
     }
 }
@@ -77,6 +77,12 @@ extension RecipeListCollectionViewController {
     override func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
         
         selectedRecipe = recipes[indexPath.row]
+        
+        let recipeVC = RecipeViewController()
+        
+        recipeVC.recipe = selectedRecipe
+        
+        navigationController?.pushViewController(recipeVC, animated: true)
         
         return true
     }

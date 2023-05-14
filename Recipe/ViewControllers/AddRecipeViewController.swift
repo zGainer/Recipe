@@ -29,6 +29,8 @@ final class AddRecipeViewController: UIViewController {
     var category: Category?
     var recipe: Recipe?
     
+    var completion: (() -> Void)?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -69,6 +71,8 @@ final class AddRecipeViewController: UIViewController {
         guard let newRecipe = fetchRecipe() else { return }
         
         DataManager.shared.saveRecipe(recipe, newRecipe: newRecipe)
+        
+        completion?()
         
         navigationController?.popViewController(animated: true)
     }
