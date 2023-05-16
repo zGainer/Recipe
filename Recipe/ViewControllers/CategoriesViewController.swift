@@ -37,7 +37,7 @@ extension CategoriesViewController {
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
-        guard let recipeListVC = segue.destination as? RecipeListCollectionViewController else { return }
+        guard let recipeListVC = segue.destination as? RecipeListViewController else { return }
         
         recipeListVC.category = selectedCategory
     }
@@ -84,6 +84,12 @@ extension CategoriesViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
         
         selectedCategory = categories[indexPath.row]
+        
+        let recipeListVC = RecipeListViewController()
+        
+        recipeListVC.category = selectedCategory
+        
+        navigationController?.pushViewController(recipeListVC, animated: true)
         
         return true
     }
