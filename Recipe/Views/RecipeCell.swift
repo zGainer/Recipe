@@ -9,9 +9,9 @@ import UIKit
 
 final class RecipeCell: UICollectionViewCell {
     
-    var recipePhoto: UIImageView!
+    var recipePhoto = UIImageView()
     
-    var recipeCaption: UILabel!
+    var recipeCaption = UILabel()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -30,19 +30,11 @@ private extension RecipeCell {
     
     func setupUI() {
         
-        createViews()
-        
         addViews()
         
         configure()
         
         layout()
-    }
-    
-    func createViews() {
-        
-        recipePhoto = UIImageView(frame: contentView.bounds)
-        recipeCaption = UILabel()
     }
     
     func addViews() {
@@ -63,9 +55,16 @@ private extension RecipeCell {
     
     func layout() {
         
-        recipeCaption.translatesAutoresizingMaskIntoConstraints = false
+        [recipePhoto, recipeCaption].forEach {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
         
         NSLayoutConstraint.activate([
+            
+            recipePhoto.topAnchor.constraint(equalTo: contentView.topAnchor),
+            recipePhoto.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            recipePhoto.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            recipePhoto.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             
             recipeCaption.bottomAnchor.constraint(equalTo: recipePhoto.bottomAnchor),
             recipeCaption.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 1)

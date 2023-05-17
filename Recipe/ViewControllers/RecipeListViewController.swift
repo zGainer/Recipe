@@ -25,11 +25,22 @@ final class RecipeListViewController: UIViewController {
         setupUI()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
+    // MARK: - Actions
+    
+    @objc
+    func addButtonTapped() {
         
-        recipes = DataManager.shared.fetchRecipes(in: category)
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
         
-        collectionView.reloadData()
+        let addRecipeVC = storyboard.instantiateViewController(withIdentifier: "addRecipeVC") as! AddRecipeViewController
+        
+        addRecipeVC.category = category
+        
+        addRecipeVC.completion = { [unowned self] in
+            updateRecipeList()
+        }
+        
+        navigationController?.pushViewController(addRecipeVC, animated: true)
     }
 }
 
@@ -65,6 +76,10 @@ extension RecipeListViewController: UICollectionViewDelegate {
         let recipeVC = RecipeViewController()
         
         recipeVC.recipe = selectedRecipe
+        
+        recipeVC.completion = { [unowned self] in
+            updateRecipeList()
+        }
         
         navigationController?.pushViewController(recipeVC, animated: true)
     }
@@ -108,16 +123,11 @@ private extension RecipeListViewController {
         return layout
     }
     
-    @objc
-    func addButtonTapped() {
+    func updateRecipeList() {
         
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        recipes = DataManager.shared.fetchRecipes(in: category)
         
-        let addRecipeVC = storyboard.instantiateViewController(withIdentifier: "addRecipeVC") as! AddRecipeViewController
-        
-        addRecipeVC.category = category
-        
-        navigationController?.pushViewController(addRecipeVC, animated: true)
+        collectionView.reloadData()
     }
 }
 
@@ -155,6 +165,8 @@ private extension RecipeListViewController {
     }
     
     func configure() {
+        
+        recipes = DataManager.shared.fetchRecipes(in: category)
         
         addRecipeButton.image = UIImage(systemName: "plus")
         

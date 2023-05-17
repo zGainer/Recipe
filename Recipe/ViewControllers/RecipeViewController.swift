@@ -31,10 +31,18 @@ final class RecipeViewController: UIViewController, UINavigationControllerDelega
     
     var recipe: Recipe?
     
+    var completion: (() -> Void)?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         setupUI()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        completion?()
     }
     
     // MARK: - Actions
@@ -177,7 +185,7 @@ private extension RecipeViewController {
 private extension RecipeViewController {
     
     func addViews() {
-        
+
         view.addSubview(scrollView)
         
         scrollView.addSubview(mainStackView)
@@ -223,9 +231,6 @@ private extension RecipeViewController {
         
         mainStackView.axis = .vertical
         mainStackView.spacing = 10
-//        mainStackView.alignment = .fill
-//        mainStackView.distribution = .fill
-//        mainStackView.contentMode = .scaleToFill
         
         overviewStackView.axis = .horizontal
         
@@ -248,11 +253,6 @@ private extension RecipeViewController {
         [scrollView, mainStackView].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
-        
-//        let rect = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height)
-        
-//        scrollView.alignmentRect(forFrame: rect)
-//        scrollView.frame(forAlignmentRect: rect)
         
         NSLayoutConstraint.activate([
                                      
