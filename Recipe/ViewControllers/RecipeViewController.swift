@@ -150,7 +150,7 @@ private extension RecipeViewController {
     
     func showAlert(completion: (() -> Void)? = nil) {
         
-        let alert = UIAlertController().createAlert(withTitle: "Delete recipe?")
+        let alert = UIAlertController.createAlert(withTitle: "Delete recipe?")
         
         let ok = UIAlertAction(title: "Ok", style: .destructive) { _ in
             guard let completion else { return }

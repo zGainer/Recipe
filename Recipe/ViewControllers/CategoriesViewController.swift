@@ -29,6 +29,13 @@ final class CategoriesViewController: UIViewController {
 
         categoriesCollection.reloadData()
     }
+    
+    @IBAction func gotoList(_ sender: UIBarButtonItem) {
+        
+        let categoriesVC = CategoriesListViewController()
+        
+        navigationController?.pushViewController(categoriesVC, animated: true)
+    }
 }
 
 // MARK: - Navigation

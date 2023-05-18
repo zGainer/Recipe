@@ -45,48 +45,6 @@
             </objects>
             <point key="canvasLocation" x="-358" y="292"/>
         </scene>
-        <!--Categories List View Controller-->
-        <scene sceneID="HyR-Dz-GaJ">
-            <objects>
-                <tableViewController id="Njo-Q2-s5g" customClass="CategoriesListViewController" customModule="Recipe" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" id="ADv-NV-AbE">
-                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                        <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="Cell" id="DZ6-2G-hUw">
-                                <rect key="frame" x="0.0" y="50" width="393" height="43.666667938232422"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="DZ6-2G-hUw" id="rHj-H4-cHD">
-                                    <rect key="frame" x="0.0" y="0.0" width="393" height="43.666667938232422"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                </tableViewCellContentView>
-                            </tableViewCell>
-                        </prototypes>
-                        <connections>
-                            <outlet property="dataSource" destination="Njo-Q2-s5g" id="qfm-gS-eY5"/>
-                            <outlet property="delegate" destination="Njo-Q2-s5g" id="1zl-zK-av1"/>
-                        </connections>
-                    </tableView>
-                    <navigationItem key="navigationItem" id="rf8-5k-sC3">
-                        <rightBarButtonItems>
-                            <barButtonItem image="plus" catalog="system" id="DMy-mS-zk4">
-                                <connections>
-                                    <action selector="addButtonPressed:" destination="Njo-Q2-s5g" id="ioo-bm-5FH"/>
-                                </connections>
-                            </barButtonItem>
-                            <barButtonItem title="Edit" id="CtF-Ss-TMN">
-                                <connections>
-                                    <action selector="editButtonPressed:" destination="Njo-Q2-s5g" id="8ui-fd-UPm"/>
-                                </connections>
-                            </barButtonItem>
-                        </rightBarButtonItems>
-                    </navigationItem>
-                </tableViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="WjU-cM-7vI" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="485" y="292"/>
-        </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="oda-Xb-GwE">
             <objects>
@@ -194,7 +152,7 @@
                     <navigationItem key="navigationItem" title="Categories" id="uS6-zG-Au1">
                         <barButtonItem key="leftBarButtonItem" title="Edit" id="NoL-Wt-IS2">
                             <connections>
-                                <segue destination="Njo-Q2-s5g" kind="show" id="A5w-oT-xfk"/>
+                                <action selector="gotoList:" destination="gmv-TC-mFm" id="N0s-XT-Mzb"/>
                             </connections>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" title="Add recipe" image="plus" catalog="system" id="GAo-5x-JvM">
