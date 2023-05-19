@@ -11,7 +11,7 @@ final class CategoriesListViewController: UIViewController {
     
     private var tableView: UITableView!
     
-    private let addRecipeButton = UIBarButtonItem()
+    private let addButton = UIBarButtonItem()
     private let editButton = UIBarButtonItem()
     
     private var categories = DataManager.shared.fetchCategories()
@@ -58,7 +58,18 @@ extension CategoriesListViewController {
             
             let ok = UIAlertAction(title: "Ok", style: .destructive) { [unowned self] _ in
                 delete(recipes)
-                delete(category, with: indexPath)
+                
+                let recipes = DataManager.shared.fetchRecipes(in: category)
+                
+                if recipes.count > 0 {
+                    let alert = UIAlertController.createAlert(withTitle: "Can`t delete all recipes in this category.",
+                                                              andMessage: "\(recipes.count) recipes left.",
+                                                              buttonTitle: "Ok")
+                    
+                    present(alert, animated: true)
+                } else {
+                    delete(category, with: indexPath)
+                }
             }
             
             alert.addAction(ok)
@@ -166,7 +177,6 @@ extension CategoriesListViewController {
         alert.addAction(save)
         
         alert.addTextField { textField in
-            
             textField.placeholder = "Category name"
         }
         
@@ -234,8 +244,8 @@ private extension CategoriesListViewController {
         editButton.target = self
         editButton.action = #selector(editButtonTapped)
         
-        addRecipeButton.target = self
-        addRecipeButton.action = #selector(addButtonTapped)
+        addButton.target = self
+        addButton.action = #selector(addButtonTapped)
     }
     
     func configure() {
@@ -244,7 +254,7 @@ private extension CategoriesListViewController {
         tableView.dataSource = self
         
         editButton.title = "Edit"
-        addRecipeButton.image = UIImage(systemName: "plus")
+        addButton.image = UIImage(systemName: "plus")
     }
     
     func createViews() {
@@ -261,6 +271,6 @@ private extension CategoriesListViewController {
     
     func layout() {
         
-        navigationItem.rightBarButtonItems = [addRecipeButton, editButton]
+        navigationItem.rightBarButtonItems = [addButton, editButton]
     }
 }
