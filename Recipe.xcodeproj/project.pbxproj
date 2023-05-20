@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		440EE46D2A175FF6006C65FA /* CategoriesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 440EE46C2A175FF6006C65FA /* CategoriesView.swift */; };
+		440EE4712A1762D3006C65FA /* CategoryCellCL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 440EE4702A1762D3006C65FA /* CategoryCellCL.swift */; };
 		4414B5762A07723D005653AE /* AddRecipeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4414B5752A07723D005653AE /* AddRecipeViewController.swift */; };
 		442E38472A13594C00DA4486 /* RecipeListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 442E38462A13594C00DA4486 /* RecipeListViewController.swift */; };
 		442E38492A13646100DA4486 /* RecipeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 442E38482A13646100DA4486 /* RecipeCell.swift */; };
@@ -30,6 +32,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		440EE46C2A175FF6006C65FA /* CategoriesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoriesView.swift; sourceTree = "<group>"; };
+		440EE4702A1762D3006C65FA /* CategoryCellCL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryCellCL.swift; sourceTree = "<group>"; };
 		4414B5752A07723D005653AE /* AddRecipeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddRecipeViewController.swift; sourceTree = "<group>"; };
 		442E38462A13594C00DA4486 /* RecipeListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeListViewController.swift; sourceTree = "<group>"; };
 		442E38482A13646100DA4486 /* RecipeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeCell.swift; sourceTree = "<group>"; };
@@ -101,6 +105,7 @@
 			children = (
 				44341EAF29DEC70D00E76AD9 /* CategoryCell.swift */,
 				442E38482A13646100DA4486 /* RecipeCell.swift */,
+				440EE4702A1762D3006C65FA /* CategoryCellCL.swift */,
 				44520B8A29FD136E00AA3D38 /* TextView.swift */,
 			);
 			path = Views;
@@ -140,6 +145,7 @@
 		447C8AD62A0B6157000B1D9F /* CodeView */ = {
 			isa = PBXGroup;
 			children = (
+				440EE46C2A175FF6006C65FA /* CategoriesView.swift */,
 			);
 			path = CodeView;
 			sourceTree = "<group>";
@@ -249,6 +255,7 @@
 				4414B5762A07723D005653AE /* AddRecipeViewController.swift in Sources */,
 				44B240E629E14D5600BCD779 /* StorageManager.swift in Sources */,
 				442EBD1729FCE82A00BFE585 /* Setting.swift in Sources */,
+				440EE4712A1762D3006C65FA /* CategoryCellCL.swift in Sources */,
 				442E38472A13594C00DA4486 /* RecipeListViewController.swift in Sources */,
 				44B240E329E141DE00BCD779 /* CoreDataStorage.xcdatamodeld in Sources */,
 				445B44D229DD66C9006516F9 /* AppDelegate.swift in Sources */,
@@ -258,6 +265,7 @@
 				442E38492A13646100DA4486 /* RecipeCell.swift in Sources */,
 				447C8AD82A0B6177000B1D9F /* RecipeViewController.swift in Sources */,
 				444FC7DD2A15FB9400FF3A18 /* CategoriesListViewController.swift in Sources */,
+				440EE46D2A175FF6006C65FA /* CategoriesView.swift in Sources */,
 				44B3CFFE29DEA7210056756A /* ShoppingViewController.swift in Sources */,
 				445B44E629DD6770006516F9 /* CategoriesViewController.swift in Sources */,
 				44341EB029DEC70D00E76AD9 /* CategoryCell.swift in Sources */,

@@ -54,7 +54,7 @@ extension RecipeListViewController: UICollectionViewDataSource {
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as? RecipeCell else { fatalError("Error cast recipe cell") }
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as? RecipeCell else { fatalError("Error cast recipe cell.") }
         
         let recipe = recipes[indexPath.row]
 
@@ -91,11 +91,9 @@ extension RecipeListViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
-        let paddingWidth = Setting.sectionInserts.left * (Setting.itemsPerRow + 1)
-        let availableWidth = collectionView.frame.width - paddingWidth
-        let widthPerItem = availableWidth / Setting.itemsPerRow
+        let sizeForItem = Setting.fetchSizeOfCollectionItem(for: collectionView.frame.width)
         
-        return CGSize(width: widthPerItem, height: widthPerItem)
+        return sizeForItem
     }
 }
 
@@ -110,17 +108,6 @@ private extension RecipeListViewController {
         } else {
             return UIImage(systemName: "fork.knife")
         }
-    }
-    
-    func fetchLayout() -> UICollectionViewFlowLayout {
-
-        let layout = UICollectionViewFlowLayout()
-
-        layout.sectionInset = Setting.sectionInserts
-        layout.minimumLineSpacing = Setting.sectionInserts.left
-        layout.minimumInteritemSpacing = Setting.sectionInserts.left
-
-        return layout
     }
     
     func updateRecipeList() {
@@ -175,7 +162,7 @@ private extension RecipeListViewController {
     
     func createViews() {
         
-        let layout = fetchLayout()
+        let layout = Setting.fetchCollectionLayout()
                 
         collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: layout)
         
