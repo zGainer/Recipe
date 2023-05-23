@@ -52,6 +52,11 @@ private extension RecipeCell {
         
         recipeCaption.backgroundColor = .systemMint
     }
+}
+
+// MARK: - Layout
+
+extension RecipeCell {
     
     func layout() {
         

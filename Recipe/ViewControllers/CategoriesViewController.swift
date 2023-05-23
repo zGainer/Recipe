@@ -1,104 +1,82 @@
-import UIKit
+//
+//  CategoriesViewController.swift
+//  Recipe
+//
+//  Created by Eugene on 19.05.23.
+//
 
-private let reuseIdentifier = "categoryCell"
+import UIKit
 
 final class CategoriesViewController: UIViewController {
     
-    private let itemsPerRow: CGFloat = 3
-    private let sectionInserts = UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20)
+    private var collectionView: UICollectionView!
+    
+    private let editButton = UIBarButtonItem()
+    
+    private let reuseIdentifier = "CategoryCell"
     
     private var categories: [Category] = []
-    
-    private var selectedCategory: Category?
-    
-    @IBOutlet var categoriesCollection: UICollectionView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        categoriesCollection.delegate = self
-        categoriesCollection.dataSource = self
-        
-        categoriesCollection.backgroundColor = .black
+        setupUI()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        categories = DataManager.shared.fetchCategories()
-
-        categoriesCollection.reloadData()
-    }
+    // MARK: - Actions
     
-    @IBAction func gotoList(_ sender: UIBarButtonItem) {
+    @objc
+    private func editButtonTapped() {
         
-        let categoriesVC = CategoriesListViewController()
+        let categoriesListVC = CategoriesListViewController()
         
-        navigationController?.pushViewController(categoriesVC, animated: true)
-    }
-}
-
-// MARK: - Navigation
-
-extension CategoriesViewController {
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        
-        guard let recipeListVC = segue.destination as? RecipeListViewController else { return }
-        
-        recipeListVC.category = selectedCategory
+        navigationController?.pushViewController(categoriesListVC, animated: true)
     }
 }
 
 // MARK: Collection View Data Source
- 
+
 extension CategoriesViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        
         categories.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = categoriesCollection.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as? CategoryCell else { fatalError("Error cast category cell") }
         
-        cell.layer.cornerRadius = Setting.cornerRadius
-        cell.backgroundColor = .systemMint
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as? CategoryCell else { fatalError("Error cast category cell.") }
         
         let category = categories[indexPath.row]
         
         let (photos, recipesCount) = fetchPhotos(in: category)
         
         if !photos.isEmpty {
-            cell.categoryImage.image = photos[Int.random(in: 0...photos.count - 1)]
+            cell.recipePhoto.image = photos[Int.random(in: 0...photos.count - 1)]
         } else {
-            cell.categoryImage.image = UIImage(systemName: "cup.and.saucer")
+            cell.recipePhoto.image = UIImage(systemName: "cup.and.saucer")
         }
         
-        cell.categoryCaption.backgroundColor = .systemCyan
-        cell.numberOfReceipts.backgroundColor = .systemCyan
+        cell.caption.text = category.name
+        cell.numberOfRecipes.text = recipesCount.formatted()
         
-        cell.categoryCaption.text = category.name
-        cell.numberOfReceipts.text = recipesCount.formatted()
-                
         return cell
     }
 }
 
-// MARK: Collection View Delegate
+// MARK: - Collection View Delegate
 
 extension CategoriesViewController: UICollectionViewDelegate {
     
-    func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
-        selectedCategory = categories[indexPath.row]
+        let selectedCategory = categories[indexPath.row]
         
         let recipeListVC = RecipeListViewController()
         
         recipeListVC.category = selectedCategory
         
         navigationController?.pushViewController(recipeListVC, animated: true)
-        
-        return true
     }
 }
 
@@ -108,23 +86,21 @@ extension CategoriesViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
 
-        let paddingWidth = sectionInserts.left * (itemsPerRow + 1)
-        let availableWidth = collectionView.frame.width - paddingWidth
-        let widthPerItem = availableWidth / itemsPerRow
-
-        return CGSize(width: widthPerItem, height: widthPerItem)
+        let sizeForItem = Setting.fetchSizeOfCollectionItem(for: collectionView.frame.width)
+        
+        return sizeForItem
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        sectionInserts
+        Setting.sectionInserts
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        sectionInserts.left
+        Setting.sectionInserts.left
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        sectionInserts.left
+        Setting.sectionInserts.left
     }
 }
 
@@ -147,5 +123,76 @@ private extension CategoriesViewController {
         }
         
         return (photos, recipes.count)
+    }
+}
+
+// MARK: - Setup View
+
+private extension CategoriesViewController {
+    
+    func setupUI() {
+        
+        createViews()
+        
+        addViews()
+        
+        addActions()
+        
+        configure()
+        
+        layout()
+    }
+}
+
+// MARK: - Setup Subviews
+
+private extension CategoriesViewController {
+    
+    func addViews() {
+        
+        view.addSubview(collectionView)
+    }
+    
+    func addActions() {
+        
+        editButton.target = self
+        editButton.action = #selector(editButtonTapped)
+    }
+    
+    func configure() {
+        
+        collectionView.delegate = self
+        collectionView.dataSource = self
+        
+        tabBarController?.tabBar.items?.first?.image = UIImage(systemName: "house.fill")
+        tabBarController?.tabBar.items?.first?.title = "Home"
+        
+        tabBarController?.tabBar.items?.last?.image = UIImage(systemName: "cart.fill")
+        tabBarController?.tabBar.items?.last?.title = "Shopping"
+        
+        categories = DataManager.shared.fetchCategories()
+        
+        editButton.title = "Edit"
+        
+        navigationItem.title = "Categories"
+    }
+    
+    func createViews() {
+        
+        let layout = Setting.fetchCollectionLayout()
+                
+        collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: layout)
+        
+        collectionView.register(CategoryCell.self, forCellWithReuseIdentifier: reuseIdentifier)
+    }
+}
+
+// MARK: - Layout
+
+private extension CategoriesViewController {
+    
+    func layout() {
+        
+        navigationItem.leftBarButtonItems = [editButton]
     }
 }

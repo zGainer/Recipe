@@ -1,10 +1,10 @@
 import UIKit
 
-private let reuseIdentifier = "shoppingCell"
-
 final class ShoppingViewController: UIViewController {
     
-    @IBOutlet var shoppingTable: UITableView!
+    private let shoppingTable = UITableView()
+    
+    private let reuseIdentifier = "shoppingCell"
     
     override func viewDidLoad() {
         super.viewDidLoad()
