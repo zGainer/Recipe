@@ -18,10 +18,18 @@ final class CategoriesListViewController: UIViewController {
     
     private let reuseIdentifier = "Cell"
     
+    var completion: (() -> Void)?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         setupUI()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        completion?()
     }
     
     // MARK: - Actions

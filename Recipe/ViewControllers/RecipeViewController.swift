@@ -55,10 +55,8 @@ final class RecipeViewController: UIViewController, UINavigationControllerDelega
     
     @objc
     private func editButtonTapped() {
-        
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        
-        guard let addRecipeVC = storyboard.instantiateViewController(withIdentifier: "addRecipeVC") as? AddRecipeViewController else { return }
+
+        let addRecipeVC = AddRecipeViewController()
         
         addRecipeVC.recipe = recipe
         

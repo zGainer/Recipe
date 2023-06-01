@@ -1,3 +1,10 @@
+//
+//  ShoppingViewController.swift
+//  Recipe
+//
+//  Created by Eugene on 10.05.23.
+//
+
 import UIKit
 
 final class ShoppingViewController: UIViewController {

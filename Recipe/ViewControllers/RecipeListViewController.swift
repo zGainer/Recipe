@@ -29,10 +29,8 @@ final class RecipeListViewController: UIViewController {
     
     @objc
     func addButtonTapped() {
-        
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        
-        let addRecipeVC = storyboard.instantiateViewController(withIdentifier: "addRecipeVC") as! AddRecipeViewController
+
+        let addRecipeVC = AddRecipeViewController()
         
         addRecipeVC.category = category
         

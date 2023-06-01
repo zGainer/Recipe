@@ -30,6 +30,12 @@ final class CategoriesViewController: UIViewController {
         
         let categoriesListVC = CategoriesListViewController()
         
+        categoriesListVC.completion = { [unowned self] in
+            fetchCategories()
+            
+            collectionView.reloadData()
+        }
+        
         navigationController?.pushViewController(categoriesListVC, animated: true)
     }
 }
@@ -124,6 +130,10 @@ private extension CategoriesViewController {
         
         return (photos, recipes.count)
     }
+    
+    func fetchCategories() {
+        categories = DataManager.shared.fetchCategories()
+    }
 }
 
 // MARK: - Setup View
@@ -170,7 +180,7 @@ private extension CategoriesViewController {
         tabBarController?.tabBar.items?.last?.image = UIImage(systemName: "cart.fill")
         tabBarController?.tabBar.items?.last?.title = "Shopping"
         
-        categories = DataManager.shared.fetchCategories()
+        fetchCategories()
         
         editButton.title = "Edit"
         
