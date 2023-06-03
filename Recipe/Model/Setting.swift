@@ -31,7 +31,7 @@ struct Setting {
         
         let paddingWidth = sectionInserts.left * (itemsPerRow + 1)
         let availableWidth = collectionWidth - paddingWidth
-        let widthPerItem = availableWidth / itemsPerRow
+        let widthPerItem = floor(availableWidth / itemsPerRow)
         let heightPerItem = widthPerItem
         
         return CGSize(width: widthPerItem, height: heightPerItem)

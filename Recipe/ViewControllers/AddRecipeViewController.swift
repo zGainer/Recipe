@@ -22,8 +22,6 @@ final class AddRecipeViewController: UIPageViewController {
     private let sourceStackView = UIStackView()
     private let notesStackView = UIStackView()
     
-    private let photoImageView = UIImageView()
-    
     private let categories = DataManager.shared.fetchCategories()
     
     private let categoryPickerView = UIPickerView()
@@ -55,16 +53,12 @@ final class AddRecipeViewController: UIPageViewController {
         super.init(coder: coder)
     }
     
+    // MARK: - Lifecycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         oldTabbarFrame = self.tabBarController?.tabBar.frame ?? .zero
-        
-        view.backgroundColor = .systemRed
-        
-        overviewVC.view.backgroundColor = .brown
-        ingredientsVC.view.backgroundColor = .black
-        directionsVC.view.backgroundColor = .blue
         
         setupUI()
     }
@@ -95,6 +89,44 @@ final class AddRecipeViewController: UIPageViewController {
         completion?()
         
         navigationController?.popViewController(animated: true)
+    }
+    
+    private func getChangeSegmentAction() -> UIAction {
+        
+        let action = UIAction(handler: { [unowned self] _ in
+            let selectedSegmentIndex = segmentedControl.selectedSegmentIndex
+            
+            guard selectedSegmentIndex < views.count else { return }
+            
+            guard let currentPageIndex = getCurrentPageIndex() else { return }
+            
+            let selectedView = views[selectedSegmentIndex]
+            
+            let direction: UIPageViewController.NavigationDirection
+            
+            direction = selectedSegmentIndex < currentPageIndex ? .reverse : .forward
+            
+            self.setViewControllers([selectedView], direction: direction, animated: true)
+        })
+        
+        return action
+    }
+    
+    private func getCategoryButtonTappedAction() -> UIAction {
+        
+        let action = UIAction(handler: { [unowned self] _ in
+            if let category {
+                let index = categories.firstIndex(of: category)
+                
+                categoryPickerView.selectRow(index ?? 0, inComponent: 0, animated: false)
+            }
+            
+            view.endEditing(true)
+            
+            categoryPickerView.isHidden.toggle()
+        })
+        
+        return action
     }
 }
 
@@ -166,16 +198,6 @@ extension AddRecipeViewController: UIPickerViewDelegate {
     }
 }
 
-// MARK: - Text Field Delegate
-
-extension AddRecipeViewController: UITextFieldDelegate {
-
-    func textFieldDidBeginEditing(_ textField: UITextField) {
-
-        categoryPickerView.isHidden = true
-    }
-}
-
 // MARK: - Tap Gesture
 
 private extension AddRecipeViewController {
@@ -187,7 +209,7 @@ private extension AddRecipeViewController {
         
         tapScreen.cancelsTouchesInView = false
         
-        view.addGestureRecognizer (tapScreen)
+        view.addGestureRecognizer(tapScreen)
     }
     
     @objc
@@ -277,66 +299,38 @@ private extension AddRecipeViewController {
         view.addSubview(segmentedControl)
         
         overviewVC.view.addSubview(mainStackView)
+        ingredientsVC.view.addSubview(ingredients)
+        directionsVC.view.addSubview(directions)
         
-//        mainStackView.addArrangedSubview(photoImageView)
         mainStackView.addArrangedSubview(categoryButton)
         mainStackView.addArrangedSubview(categoryPickerView)
         mainStackView.addArrangedSubview(nameStackView)
         mainStackView.addArrangedSubview(sourceStackView)
         mainStackView.addArrangedSubview(notesStackView)
 
-        nameStackView.addArrangedSubview(name)
         nameStackView.addArrangedSubview(getCaption(withText: "Name: "))
+        nameStackView.addArrangedSubview(name)
         
-        sourceStackView.addArrangedSubview(source)
         sourceStackView.addArrangedSubview(getCaption(withText: "Source: "))
+        sourceStackView.addArrangedSubview(source)
         
-        notesStackView.addArrangedSubview(notes)
         notesStackView.addArrangedSubview(getCaption(withText: "Notes: "))
-        
-        ingredients.backgroundColor = .cyan
-        
-        ingredientsVC.view.addSubview(ingredients)
-        
-        directions.backgroundColor = .green
-        directionsVC.view.addSubview(directions)
+        notesStackView.addArrangedSubview(notes)
     }
     
     // MARK: Add Actions
     
     func addActions() {
         
-        let selectedViewAction = UIAction(handler: { [unowned self] _ in
-            let selectedSegmentIndex = segmentedControl.selectedSegmentIndex
-            
-            guard selectedSegmentIndex < views.count else { return }
-            
-            guard let currentPageIndex = getCurrentPageIndex() else { return }
-            
-            let selectedView = views[selectedSegmentIndex]
-            
-            let direction: UIPageViewController.NavigationDirection
-            
-            direction = selectedSegmentIndex < currentPageIndex ? .reverse : .forward
-            
-            self.setViewControllers([selectedView], direction: direction, animated: true)
-        })
+        let changeSegmentAction = getChangeSegmentAction()
+        let categoryButtonTappedAction = getCategoryButtonTappedAction()
+        let hideCategoryPickerView = UIAction(handler: { [unowned self] _ in categoryPickerView.isHidden = true })
         
-        segmentedControl.addAction(selectedViewAction, for: .valueChanged)
+        segmentedControl.addAction(changeSegmentAction, for: .valueChanged)
         
-        let categoryButtonAction = UIAction(handler: { [unowned self] _ in
-            if let category {
-                let index = categories.firstIndex(of: category)
-                
-                categoryPickerView.selectRow(index ?? 0, inComponent: 0, animated: false)
-            }
-            
-            view.endEditing(true)
-            
-            categoryPickerView.isHidden.toggle()
-        })
+        categoryButton.addAction(categoryButtonTappedAction, for: .touchDown)
         
-        categoryButton.addAction(categoryButtonAction, for: .touchDown)
+        [name, source, notes].forEach { $0.addAction(hideCategoryPickerView, for: .editingDidBegin) }
         
         saveButton.target = self
         saveButton.action = #selector(saveButtonTapped)
@@ -352,10 +346,6 @@ private extension AddRecipeViewController {
         categoryPickerView.dataSource = self
         categoryPickerView.delegate = self
         
-        name.delegate = self
-        source.delegate = self
-        notes.delegate = self
-        
         setupGestures()
         
         if let recipe {
@@ -368,6 +358,8 @@ private extension AddRecipeViewController {
         
         views = [overviewVC, ingredientsVC, directionsVC]
 
+        views.forEach { $0.view.backgroundColor = .white }
+        
         if let first = views.first {
             self.setViewControllers([first], direction: .forward, animated: true)
         }
@@ -378,9 +370,8 @@ private extension AddRecipeViewController {
         
         segmentedControl.selectedSegmentIndex = 0
 
-        photoImageView.image = UIImage(systemName: "fork.knife")
-        
         categoryButton.setTitle(category?.name ?? "Select category", for: .normal)
+        categoryButton.setTitleColor(.systemBlue, for: .normal)
         
         categoryPickerView.isHidden = true
         
@@ -394,10 +385,6 @@ private extension AddRecipeViewController {
         mainStackView.axis = .vertical
         mainStackView.spacing = 10
         
-        nameStackView.semanticContentAttribute = .forceRightToLeft
-        sourceStackView.semanticContentAttribute = .forceRightToLeft
-        notesStackView.semanticContentAttribute = .forceRightToLeft
-
         saveButton.title = "Save"
     }
 }
@@ -408,7 +395,9 @@ private extension AddRecipeViewController {
     
     func layout() {
         
-        [segmentedControl, mainStackView,  ingredients, directions].forEach {
+        let heightOffset = segmentedControl.intrinsicContentSize.height
+        
+        [segmentedControl, mainStackView, ingredients, directions].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
         
@@ -416,18 +405,16 @@ private extension AddRecipeViewController {
             segmentedControl.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             segmentedControl.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             
-            mainStackView.topAnchor.constraint(equalTo: overviewVC.view.topAnchor, constant: 140),
+            mainStackView.topAnchor.constraint(equalTo: overviewVC.view.safeAreaLayoutGuide.topAnchor, constant: heightOffset),
             mainStackView.leadingAnchor.constraint(equalTo: overviewVC.view.leadingAnchor, constant: 16),
             mainStackView.trailingAnchor.constraint(equalTo: overviewVC.view.trailingAnchor, constant: -16),
             
-            photoImageView.heightAnchor.constraint(equalTo: photoImageView.widthAnchor, multiplier: 1),
-            
-            ingredients.topAnchor.constraint(equalTo: ingredientsVC.view.topAnchor, constant: 140),
+            ingredients.topAnchor.constraint(equalTo: ingredientsVC.view.safeAreaLayoutGuide.topAnchor, constant: heightOffset),
             ingredients.leadingAnchor.constraint(equalTo: ingredientsVC.view.leadingAnchor),
             ingredients.trailingAnchor.constraint(equalTo: ingredientsVC.view.trailingAnchor),
             ingredients.bottomAnchor.constraint(equalTo: ingredientsVC.view.bottomAnchor),
             
-            directions.topAnchor.constraint(equalTo: directionsVC.view.topAnchor, constant: 140),
+            directions.topAnchor.constraint(equalTo: directionsVC.view.safeAreaLayoutGuide.topAnchor, constant: heightOffset),
             directions.leadingAnchor.constraint(equalTo: directionsVC.view.leadingAnchor),
             directions.trailingAnchor.constraint(equalTo: directionsVC.view.trailingAnchor),
             directions.bottomAnchor.constraint(equalTo: directionsVC.view.bottomAnchor),
