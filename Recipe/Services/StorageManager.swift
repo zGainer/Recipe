@@ -16,7 +16,7 @@ final class StorageManager {
     private let persistentContainer: NSPersistentContainer = {
         
         let container = NSPersistentContainer(name: "CoreDataStorage")
-
+        
         container.loadPersistentStores { _, error in
             if let error = error as NSError? {
                 fatalError("Unresolved error \(error), \(error.userInfo)")
@@ -30,17 +30,19 @@ final class StorageManager {
         return container
     }()
     
-//    var viewContext: NSManagedObjectContext {
-//        Self.persistentContainer.viewContext
-//    }
+    //    var viewContext: NSManagedObjectContext {
+    //        Self.persistentContainer.viewContext
+    //    }
     
     private let viewContext: NSManagedObjectContext
     
     private init() {
         viewContext = persistentContainer.viewContext
     }
-    
+}
     // MARK: - CRUD Category
+ 
+extension StorageManager {
     
     func create(_ name: String, completion: (Category) -> Void) {
         

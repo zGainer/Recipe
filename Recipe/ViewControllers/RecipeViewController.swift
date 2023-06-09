@@ -6,8 +6,9 @@
 //
 
 import UIKit
+import PhotosUI
 
-final class RecipeViewController: UIViewController, UINavigationControllerDelegate {
+final class RecipeViewController: UIViewController {
     
     private let scrollView = UIScrollView()
 
@@ -26,8 +27,6 @@ final class RecipeViewController: UIViewController, UINavigationControllerDelega
     private let directions = UILabel()
     
     private let photoImageView = UIImageView()
-    
-    private let imagePicker = UIImagePickerController()
     
     var recipe: Recipe?
     
@@ -50,7 +49,16 @@ final class RecipeViewController: UIViewController, UINavigationControllerDelega
     @objc
     private func addPhotoButtonTapped() {
         
-        present(imagePicker, animated: true)
+        var config = PHPickerConfiguration()
+        
+        config.selectionLimit = 1
+        config.filter = .images
+        
+        let photoPicker = PHPickerViewController(configuration: config)
+        
+        photoPicker.delegate = self
+        
+        present(photoPicker, animated: true)
     }
     
     @objc
@@ -80,25 +88,28 @@ final class RecipeViewController: UIViewController, UINavigationControllerDelega
     }
 }
 
-// MARK: - Image Picker Controller Delegate
+// MARK: - PH Picker View Controller Delegate
 
-extension RecipeViewController: UIImagePickerControllerDelegate {
+extension RecipeViewController: PHPickerViewControllerDelegate {
     
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        
-        if let pickedImage = info[UIImagePickerController.InfoKey.editedImage] as? UIImage {
-            
-            photoImageView.image = pickedImage
-            
-            addPhoto(pickedImage)
-            
-            photoImageView.isHidden = recipe?.photo == nil
+    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+
+        if results.isEmpty {
+            dismiss(animated: true)
         }
         
-        dismiss(animated: true)
-    }
-    
-    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        guard let itemProvider = results.first?.itemProvider,
+              itemProvider.canLoadObject(ofClass: UIImage.self) else { return }
+        
+        itemProvider.loadObject(ofClass: UIImage.self, completionHandler: { [unowned self] (object, error) in
+            if let image = object as? UIImage {
+                DispatchQueue.main.async {
+                    self.photoImageView.image = image
+                    
+                    self.addPhoto(image)
+                }
+            }
+        })
         
         dismiss(animated: true)
     }
@@ -122,7 +133,7 @@ private extension RecipeViewController {
             photoImageView.image = UIImage(data: photoData)
         } else {
             let configuration = UIImage.SymbolConfiguration(weight: .ultraLight)
-            
+
             photoImageView.image = UIImage(systemName: "popcorn", withConfiguration: configuration)
         }
     }
@@ -169,11 +180,11 @@ private extension RecipeViewController {
     func setupUI() {
         
         addViews()
-        
+
         addActions()
-        
+
         configure()
-        
+
         layout()
     }
 }
@@ -218,9 +229,6 @@ private extension RecipeViewController {
     
     func configure() {
         
-        imagePicker.delegate = self
-        imagePicker.allowsEditing = true
-        
         fillRecipeData()
         
         addPhotoButton.image = UIImage(systemName: "photo")
@@ -230,9 +238,7 @@ private extension RecipeViewController {
         mainStackView.axis = .vertical
         mainStackView.spacing = 10
         
-        overviewStackView.axis = .horizontal
-        
-        scrollView.backgroundColor = .systemMint
+        view.backgroundColor = .white
         
         ingredients.numberOfLines = 0
         ingredients.lineBreakMode = .byWordWrapping
@@ -254,10 +260,10 @@ private extension RecipeViewController {
         
         NSLayoutConstraint.activate([
                                      
-            scrollView.topAnchor.constraint(equalTo: view.topAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             scrollView.contentLayoutGuide.bottomAnchor.constraint(equalTo: mainStackView.bottomAnchor),
             
             mainStackView.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),

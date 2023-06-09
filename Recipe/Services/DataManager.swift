@@ -15,18 +15,18 @@ final class DataManager {
     
     func fetchCategories() -> [Category] {
         
-        var fetchedcategories: [Category] = []
+        var fetchedCategories: [Category] = []
         
         StorageManager.shared.fetchData { result in
             switch result {
             case .success(let categories):
-                fetchedcategories = categories
+                fetchedCategories = categories
             case .failure(let error):
                 print(error.localizedDescription)
             }
         }
         
-        return fetchedcategories
+        return fetchedCategories
     }
     
     func fetchRecipes(in category: Category?) -> [Recipe] {
